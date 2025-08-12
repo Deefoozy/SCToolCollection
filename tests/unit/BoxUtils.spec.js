@@ -26,9 +26,8 @@ describe('BoxCounter', () => {
     expect(boxCounter.boxAmount).toBe(0);
     expect(boxCounter.scuAmount).toBe(0);
 
-    const tally = boxCounter.tally;
     boxSizeList.forEach(size => {
-      expect(tally[size]).toBe(0);
+      expect(boxCounter.tally[size]).toBe(0);
     });
   });
 
@@ -37,6 +36,9 @@ describe('BoxCounter', () => {
     boxCounter.IncrementIndex(32);
     boxCounter.IncrementIndex(16);
 
+    expect(boxCounter.boxAmount).toBe(2);
+    expect(boxCounter.scuAmount).toBe(32 + 16);
+
     // Then reset
     boxCounter.ResetCount();
 
@@ -44,50 +46,53 @@ describe('BoxCounter', () => {
     expect(boxCounter.boxAmount).toBe(0);
     expect(boxCounter.scuAmount).toBe(0);
 
-    const tally = boxCounter.tally;
     boxSizeList.forEach(size => {
-      expect(tally[size]).toBe(0);
+      expect(boxCounter.tally[size]).toBe(0);
     });
   });
 
   it('IncrementIndex should increment the count for a specific box size', () => {
+    const boxSize = 32
+
     // Increment box size 32
-    const result = boxCounter.IncrementIndex(32);
+    let result = boxCounter.IncrementIndex(boxSize);
 
     // Check the result
     expect(result).toBe(1);
-    expect(boxCounter.tally[32]).toBe(1);
-    expect(boxCounter.boxAmount).toBe(1);
-    expect(boxCounter.scuAmount).toBe(32);
+    expect(boxCounter.tally[boxSize]).toBe(result);
+    expect(boxCounter.boxAmount).toBe(result);
+    expect(boxCounter.scuAmount).toBe(boxSize * result);
 
     // Increment again
-    const result2 = boxCounter.IncrementIndex(32);
+    result = boxCounter.IncrementIndex(boxSize);
 
     // Check the updated result
-    expect(result2).toBe(2);
-    expect(boxCounter.tally[32]).toBe(2);
-    expect(boxCounter.boxAmount).toBe(2);
-    expect(boxCounter.scuAmount).toBe(64);
+    expect(result).toBe(2);
+    expect(boxCounter.tally[boxSize]).toBe(result);
+    expect(boxCounter.boxAmount).toBe(result);
+    expect(boxCounter.scuAmount).toBe(result * boxSize);
   });
 
   it('AddToIndex should add multiple boxes of a specific size', () => {
+    const boxSize = 16
+
     // Add 3 boxes of size 16
-    const result = boxCounter.AddToIndex(16, 3);
+    let result = boxCounter.AddToIndex(boxSize, 3);
 
     // Check the result
     expect(result).toBe(3);
-    expect(boxCounter.tally[16]).toBe(3);
-    expect(boxCounter.boxAmount).toBe(3);
-    expect(boxCounter.scuAmount).toBe(48);
+    expect(boxCounter.tally[boxSize]).toBe(result);
+    expect(boxCounter.boxAmount).toBe(result);
+    expect(boxCounter.scuAmount).toBe(Math.round(result * boxSize));
 
     // Add 2 more
-    const result2 = boxCounter.AddToIndex(16, 2);
+    result = boxCounter.AddToIndex(boxSize, 2);
 
-    // Check the updated result
-    expect(result2).toBe(5);
-    expect(boxCounter.tally[16]).toBe(5);
-    expect(boxCounter.boxAmount).toBe(5);
-    expect(boxCounter.scuAmount).toBe(80);
+    // Check the result
+    expect(result).toBe(5);
+    expect(boxCounter.tally[boxSize]).toBe(result);
+    expect(boxCounter.boxAmount).toBe(result);
+    expect(boxCounter.scuAmount).toBe(Math.round(result * boxSize));
   });
 
   it('GetTallyClones should return the specified number of tally clones', () => {
