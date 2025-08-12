@@ -7,6 +7,12 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    include: ['**/*.spec.js'],
+    includeSource: ['src/lib/**/*.spec.js'],
+    coverage: {
+      include: ['src/lib/**'],
+      exclude: ['**/node_modules/**', '**/tests/**'],
+    },
   },
   resolve: {
     alias: {
