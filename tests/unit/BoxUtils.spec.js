@@ -91,16 +91,21 @@ describe('BoxCounter', () => {
   });
 
   it('GetTallyClones should return the specified number of tally clones', () => {
-    // Add some boxes
-    boxCounter.AddToIndex(32, 2);
-    boxCounter.AddToIndex(16, 3);
-
-    // Mock window.structuredClone if it doesn't exist in the test environment
-    if (typeof window === 'undefined' || !window.structuredClone) {
-      global.window = {
-        structuredClone: obj => JSON.parse(JSON.stringify(obj))
-      };
+    // Setup expectations
+    const expectedValues = {
+      32: 2,
+      24: 0,
+      16: 3,
+      8: 0,
+      4: 16,
+      2: 0,
+      1: 0
     }
+
+    // Insert expected values
+    boxSizeList.forEach(size => {
+      boxCounter.tally[size] = expectedValues[size]
+    })
 
     // Get 3 clones
     const clones = boxCounter.GetTallyClones(3);
@@ -110,12 +115,9 @@ describe('BoxCounter', () => {
 
     // Check that each clone has the correct values
     clones.forEach(clone => {
-      expect(clone[32]).toBe(2);
-      expect(clone[16]).toBe(3);
-
       // Check other sizes are still 0
-      boxSizeList.filter(size => size !== 32 && size !== 16).forEach(size => {
-        expect(clone[size]).toBe(0);
+      boxSizeList.forEach(size => {
+        expect(clone[size]).toBe(expectedValues[size]);
       });
     });
 
