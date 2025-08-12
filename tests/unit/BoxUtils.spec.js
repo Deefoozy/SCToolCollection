@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { boxSizeList, BoxTools, BoxCounter, BoxSplitter } from '../../../src/lib/BoxUtils.js';
+import { boxSizeList, BoxTools, BoxCounter, BoxSplitter } from '/src/lib/BoxUtils.js';
 
 // Tests for BoxTools
 describe('BoxTools', () => {

@@ -264,6 +264,6 @@ export class BoxSplitter {
     const perSplit = input / splitters;
     const perSplitRounded = Math.floor(perSplit);
 
-    return perSplit - perSplitRounded * splitters;
+    return Math.round((perSplit - perSplitRounded) * splitters);
   }
 }
