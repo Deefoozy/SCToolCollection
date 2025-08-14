@@ -73,6 +73,52 @@ describe('BoxCounter', () => {
     expect(boxCounter.scuAmount).toBe(result * boxSize);
   });
 
+  it('DecrementIndex should decrement the count for a specific box size', () => {
+    const boxSize = 32
+
+    boxCounter.AddToIndex(boxSize, 3);
+
+    // Decrement box size 32
+    let result = boxCounter.DecrementIndex(boxSize);
+
+    // Check the resul
+    expect(result).toBe(2);
+    expect(boxCounter.tally[boxSize]).toBe(result);
+    expect(boxCounter.boxAmount).toBe(result);
+    expect(boxCounter.scuAmount).toBe(boxSize * result);
+
+    // Decrement again
+    result = boxCounter.DecrementIndex(boxSize);
+
+    // Check the updated result
+    expect(result).toBe(1);
+    expect(boxCounter.tally[boxSize]).toBe(result);
+    expect(boxCounter.boxAmount).toBe(result);
+    expect(boxCounter.scuAmount).toBe(result * boxSize);
+  });
+
+  it('DecrementIndex should not decrement beyond 0', () => {
+    const boxSize = 32
+
+    // Decrement box size 32
+    let result = boxCounter.DecrementIndex(boxSize);
+
+    // Check the resul
+    expect(result).toBe(0);
+    expect(boxCounter.tally[boxSize]).toBe(result);
+    expect(boxCounter.boxAmount).toBe(result);
+    expect(boxCounter.scuAmount).toBe(boxSize * result);
+
+    // Decrement again
+    result = boxCounter.DecrementIndex(boxSize);
+
+    // Check the updated result
+    expect(result).toBe(0);
+    expect(boxCounter.tally[boxSize]).toBe(result);
+    expect(boxCounter.boxAmount).toBe(result);
+    expect(boxCounter.scuAmount).toBe(result * boxSize);
+  });
+
   it('AddToIndex should add multiple boxes of a specific size', () => {
     const boxSize = 16
 
@@ -135,6 +181,12 @@ describe('BoxCounter', () => {
 
 // Tests for BoxSplitter
 describe('BoxSplitter', () => {
+  let boxCounter;
+
+  beforeEach(() => {
+    boxCounter = new BoxCounter();
+  });
+
   it('CalculateSplit should calculate the remainder when splitting boxes', () => {
     // Test perfect splits
     expect(BoxSplitter.CalculateSplit(10, 5)).toBe(0); // 10 / 5 = 2 remainder 0
@@ -154,4 +206,41 @@ describe('BoxSplitter', () => {
     expect(BoxSplitter.IsPerfectSplit(10, 3)).toBe(false);
     expect(BoxSplitter.IsPerfectSplit(20, 3)).toBe(false);
   });
+
+  function verifySimpleSplit(boxesPerSplit, loopAmount, inputCounter) {
+    for (let i = 0; i <= loopAmount; i++) {
+      const splitters = i + 2;
+      boxCounter.AddToIndex(32, splitters * boxesPerSplit);
+      console.group()
+      console.log(splitters, boxesPerSplit, splitters * boxesPerSplit, boxCounter.tally[32]);
+      console.groupEnd()
+
+      const splits = BoxSplitter.SimpleSplit(boxCounter, splitters);
+
+      expect(splits.length).toBe(splitters);
+
+      splits.forEach(split => {
+        expect(split[32]).toBe(boxesPerSplit);
+      });
+
+      boxCounter.ResetCount();
+    }
+  }
+
+  it('SimplesSplit should split input into equal parts', () => {
+    let boxesPerSplit = 1;
+    const maxBoxesPerSplit = 5;
+    const runsPerMultiplier = 5;
+
+
+    while (boxesPerSplit <= maxBoxesPerSplit) {
+      verifySimpleSplit(boxesPerSplit, runsPerMultiplier, boxCounter);
+
+      boxesPerSplit++;
+    }
+  })
+
+  it('GetDeltas should correctly determine deltas', () => {
+
+  })
 });

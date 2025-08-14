@@ -239,7 +239,8 @@ export class BoxSplitter {
 
     for (let tallyIndex = 0, tallyLength = clonedTallies.length; tallyIndex < tallyLength; ++tallyIndex) {
       for (let boxIndex = 0, boxLength = boxSizeList.length; boxIndex < boxLength; ++boxIndex) {
-        clonedTallies[tallyIndex][boxIndex] = clonedTallies[tallyIndex][boxIndex] / splitters;
+        const currentBox = boxSizeList[boxIndex];
+        clonedTallies[tallyIndex][currentBox] = clonedTallies[tallyIndex][currentBox] / splitters;
       }
     }
 
