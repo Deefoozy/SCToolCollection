@@ -55,7 +55,7 @@ const completed = ref(false);
   margin: 0 0 5px;
 
   cursor: pointer;
-  user-select: none;it
+  user-select: none;
 }
 
 .split__id--completed {
